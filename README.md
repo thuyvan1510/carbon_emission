@@ -1,9 +1,11 @@
 # carbon_emission
 
 ## Table 'product_emissions'
+```sql
 SELECT *
 FROM product_emissions
 LIMIT 5;
+```
 ## Result
 | id           | company_id | country_id | industry_group_id | year | product_name                                                    | weight_kg | carbon_footprint_pcf | upstream_percent_total_pcf | operations_percent_total_pcf | downstream_percent_total_pcf | 
 | -----------: | ---------: | ---------: | ----------------: | ---: | --------------------------------------------------------------: | --------: | -------------------: | -------------------------: | ---------------------------: | ---------------------------: | 
@@ -14,9 +16,11 @@ LIMIT 5;
 | 10261-2-2017 | 14         | 16         | 25                | 2017 | Multifunction Printers                                          | 110       | 1818                 | 25.08                      | 4.51                         | 70.41                        | 
 
 ## Table 'industry_groups'
+```sql
 SELECT *
 FROM industry_groups
 LIMIT 5;
+```
 ## Result:
 | id | industry_group                                                         | 
 | -: | ---------------------------------------------------------------------: | 
@@ -27,6 +31,7 @@ LIMIT 5;
 | 5  | "Pharmaceuticals, Biotechnology & Life Sciences"                       | 
 
 ## Find out duplicated records
+```sql
 SELECT *, COUNT(*) AS count_duplictate
 FROM product_emissions
 GROUP BY 
@@ -43,7 +48,7 @@ GROUP BY
     downstream_percent_total_pcf
 HAVING count(*)>1
 LIMIT 10;
-
+```
 ## Result
 | id           | company_id | country_id | industry_group_id | year | product_name                                                    | weight_kg | carbon_footprint_pcf | upstream_percent_total_pcf                       | operations_percent_total_pcf                     | downstream_percent_total_pcf                     | count_duplictate | 
 | -----------: | ---------: | ---------: | ----------------: | ---: | --------------------------------------------------------------: | --------: | -------------------: | -----------------------------------------------: | -----------------------------------------------: | -----------------------------------------------: | ---------------: | 
@@ -59,11 +64,12 @@ LIMIT 10;
 | 10661-1-2015 | 85         | 28         | 6                 | 2015 | 501® Original Jeans – Dark Stonewash                            | 0.997     | 16                   | N/a (product with insufficient stage-level data) | N/a (product with insufficient stage-level data) | N/a (product with insufficient stage-level data) | 2                | 
 
 ## Which products contribute the most to carbon emissions?
+```sql
 SELECT product_name,round(avg(carbon_footprint_pcf),2) as contribution
 FROM product_emissions
 GROUP BY product_name
 ORDER BY contribution DESC;
-
+```
 ## Result
 | product_name                                                                                                                       | contribution | 
 | ---------------------------------------------------------------------------------------------------------------------------------: | -----------: | 
@@ -79,6 +85,7 @@ ORDER BY contribution DESC;
 | Mercedes-Benz SL (SL 350)                                                                                                          | 72000.00     | 
 
 ## What are the industry groups of these products?
+```sql
 SELECT 
   pe.product_name,
   ig.industry_group,
@@ -88,7 +95,7 @@ JOIN industry_groups ig ON pe.industry_group_id = ig.id
 GROUP BY pe.product_name, ig.industry_group
 ORDER BY contribution DESC
 LIMIT 10;
-
+```
 ## Result
 | product_name                                                                                                                       | industry_group                     | contribution | 
 | ---------------------------------------------------------------------------------------------------------------------------------: | ---------------------------------: | -----------: | 
@@ -104,6 +111,7 @@ LIMIT 10;
 | Mercedes-Benz SL (SL 350)                                                                                                          | Automobiles & Components           | 72000.00     | 
 
 ## What are the industries with the highest contribution to carbon emissions?
+```sql
 SELECT 
   ig.industry_group,
   ROUND(SUM(pe.carbon_footprint_pcf), 2) AS contribution
@@ -112,7 +120,7 @@ JOIN industry_groups ig ON pe.industry_group_id = ig.id
 GROUP BY ig.industry_group
 ORDER BY contribution DESC
 LIMIT 10;
-
+```
 ##Result
 | industry_group                                   | contribution | 
 | -----------------------------------------------: | -----------: | 
@@ -128,6 +136,7 @@ LIMIT 10;
 | Media                                            | 23017.00     | 
 
 ## What are the companies with the highest contribution to carbon emissions?
+```sql
 SELECT 
     cp.company_name,
     ROUND(SUM(pe.carbon_footprint_pcf), 2) AS contribution
@@ -136,7 +145,7 @@ JOIN companies cp ON cp.id = pe.company_id
 GROUP BY pe.company_id
 ORDER BY contribution DESC
 LIMIT 10;
-
+```
 ## Result
 | company_name                            | contribution | 
 | --------------------------------------: | -----------: | 
@@ -152,6 +161,7 @@ LIMIT 10;
 | "Daikin Industries, Ltd."               | 105600.00    | 
 
 ## What are the countries with the highest contribution to carbon emissions?
+```sq
 SELECT 
   ct.country_name,
   ROUND(SUM(pe.carbon_footprint_pcf), 2) AS contribution
@@ -160,7 +170,7 @@ JOIN countries ct ON ct.id = pe.country_id
 GROUP BY pe.company_id
 ORDER BY contribution DESC
 LIMIT 10;
-
+```
 ## Result
 | country_name | contribution | 
 | -----------: | -----------: | 
@@ -176,13 +186,14 @@ LIMIT 10;
 | Japan        | 105600.00    | 
 
 ## What is the trend of carbon footprints (PCFs) over the years?
+```sql
 SELECT 
 	year,
-  ROUND(SUM(carbon_footprint_pcf), 2) AS contribution
+  	ROUND(SUM(carbon_footprint_pcf), 2) AS contribution
 FROM product_emissions
 GROUP BY year
 ORDER BY year ASC;
-
+```
 ## Result
 | year | contribution | 
 | ---: | -----------: | 
@@ -193,16 +204,18 @@ ORDER BY year ASC;
 | 2017 | 340271.00    | 
 
 ## Which industry groups has demonstrated the most notable decrease in carbon footprints (PCFs) over time?
-  SELECT 
-	  industry_group,
-	  year,
-	  ROUND(SUM(carbon_footprint_pcf), 2) AS contribution
+ ```sql
+ SELECT 
+	industry_group,
+	year,
+	ROUND(SUM(carbon_footprint_pcf), 2) AS contribution
   FROM product_emissions pe
   JOIN industry_groups ig ON ig.id=pe.industry_group_id
   GROUP BY 
 	  industry_group,
 	  year
   ORDER BY ig.industry_group, year ASC;
+```
 ## Result
 | industry_group                                                         | year | contribution | 
 | ---------------------------------------------------------------------: | ---: | -----------: | 
