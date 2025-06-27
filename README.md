@@ -205,86 +205,54 @@ ORDER BY year ASC;
 
 ## Which industry groups has demonstrated the most notable decrease in carbon footprints (PCFs) over time?
  ```sql
- SELECT 
-	industry_group,
-	year,
-	ROUND(SUM(carbon_footprint_pcf), 2) AS contribution
-  FROM product_emissions pe
-  JOIN industry_groups ig ON ig.id=pe.industry_group_id
-  GROUP BY 
-	  industry_group,
-	  year
-  ORDER BY ig.industry_group, year ASC;
+SELECT
+  industry_group,
+  ROUND(SUM(CASE WHEN year = 2013 THEN ROUND(carbon_footprint_pcf, 2) ELSE 0 END),2) AS "2013",
+  ROUND(SUM(CASE WHEN year = 2014 THEN ROUND(carbon_footprint_pcf, 2) ELSE 0 END),2) AS "2014",
+  ROUND(SUM(CASE WHEN year = 2015 THEN ROUND(carbon_footprint_pcf, 2) ELSE 0 END),2) AS "2015",
+  ROUND(SUM(CASE WHEN year = 2016 THEN ROUND(carbon_footprint_pcf, 2) ELSE 0 END),2) AS "2016",
+  ROUND(SUM(CASE WHEN year = 2013 THEN ROUND(carbon_footprint_pcf, 2) ELSE 0 END),2) AS "2017"
+FROM product_emissions pe
+LEFT JOIN industry_groups ig ON ig.id = pe.industry_group_id
+GROUP BY industry_group
+ORDER BY 
+	'2013',
+	'2014',
+	'2015',
+	'2016',
+	'2017';
 ```
 ## Result
-| industry_group                                                         | year | contribution | 
-| ---------------------------------------------------------------------: | ---: | -----------: | 
-| "Consumer Durables, Household and Personal Products"                   | 2015 | 931.00       | 
-| "Food, Beverage & Tobacco"                                             | 2013 | 4995.00      | 
-| "Food, Beverage & Tobacco"                                             | 2014 | 2685.00      | 
-| "Food, Beverage & Tobacco"                                             | 2015 | 0.00         | 
-| "Food, Beverage & Tobacco"                                             | 2016 | 100289.00    | 
-| "Food, Beverage & Tobacco"                                             | 2017 | 3162.00      | 
-| "Forest and Paper Products - Forestry, Timber, Pulp and Paper, Rubber" | 2015 | 8909.00      | 
-| "Mining - Iron, Aluminum, Other Metals"                                | 2015 | 8181.00      | 
-| "Pharmaceuticals, Biotechnology & Life Sciences"                       | 2013 | 32271.00     | 
-| "Pharmaceuticals, Biotechnology & Life Sciences"                       | 2014 | 40215.00     | 
-| "Textiles, Apparel, Footwear and Luxury Goods"                         | 2015 | 387.00       | 
-| Automobiles & Components                                               | 2013 | 130189.00    | 
-| Automobiles & Components                                               | 2014 | 230015.00    | 
-| Automobiles & Components                                               | 2015 | 817227.00    | 
-| Automobiles & Components                                               | 2016 | 1404833.00   | 
-| Capital Goods                                                          | 2013 | 60190.00     | 
-| Capital Goods                                                          | 2014 | 93699.00     | 
-| Capital Goods                                                          | 2015 | 3505.00      | 
-| Capital Goods                                                          | 2016 | 6369.00      | 
-| Capital Goods                                                          | 2017 | 94949.00     | 
-| Chemicals                                                              | 2015 | 62369.00     | 
-| Commercial & Professional Services                                     | 2013 | 1157.00      | 
-| Commercial & Professional Services                                     | 2014 | 477.00       | 
-| Commercial & Professional Services                                     | 2016 | 2890.00      | 
-| Commercial & Professional Services                                     | 2017 | 741.00       | 
-| Consumer Durables & Apparel                                            | 2013 | 2867.00      | 
-| Consumer Durables & Apparel                                            | 2014 | 3280.00      | 
-| Consumer Durables & Apparel                                            | 2016 | 1162.00      | 
-| Containers & Packaging                                                 | 2015 | 2988.00      | 
-| Electrical Equipment and Machinery                                     | 2015 | 9801558.00   | 
-| Energy                                                                 | 2013 | 750.00       | 
-| Energy                                                                 | 2016 | 10024.00     | 
-| Food & Beverage Processing                                             | 2015 | 141.00       | 
-| Food & Staples Retailing                                               | 2014 | 773.00       | 
-| Food & Staples Retailing                                               | 2015 | 706.00       | 
-| Food & Staples Retailing                                               | 2016 | 2.00         | 
-| Gas Utilities                                                          | 2015 | 122.00       | 
-| Household & Personal Products                                          | 2013 | 0.00         | 
-| Materials                                                              | 2013 | 200513.00    | 
-| Materials                                                              | 2014 | 75678.00     | 
-| Materials                                                              | 2016 | 88267.00     | 
-| Materials                                                              | 2017 | 213137.00    | 
-| Media                                                                  | 2013 | 9645.00      | 
-| Media                                                                  | 2014 | 9645.00      | 
-| Media                                                                  | 2015 | 1919.00      | 
-| Media                                                                  | 2016 | 1808.00      | 
-| Retailing                                                              | 2014 | 19.00        | 
-| Retailing                                                              | 2015 | 11.00        | 
-| Semiconductors & Semiconductor Equipment                               | 2014 | 50.00        | 
-| Semiconductors & Semiconductor Equipment                               | 2016 | 4.00         | 
-| Semiconductors & Semiconductors Equipment                              | 2015 | 3.00         | 
-| Software & Services                                                    | 2013 | 6.00         | 
-| Software & Services                                                    | 2014 | 146.00       | 
-| Software & Services                                                    | 2015 | 22856.00     | 
-| Software & Services                                                    | 2016 | 22846.00     | 
-| Software & Services                                                    | 2017 | 690.00       | 
-| Technology Hardware & Equipment                                        | 2013 | 61100.00     | 
-| Technology Hardware & Equipment                                        | 2014 | 167361.00    | 
-| Technology Hardware & Equipment                                        | 2015 | 106157.00    | 
-| Technology Hardware & Equipment                                        | 2016 | 1566.00      | 
-| Technology Hardware & Equipment                                        | 2017 | 27592.00     | 
-| Telecommunication Services                                             | 2013 | 52.00        | 
-| Telecommunication Services                                             | 2014 | 183.00       | 
-| Telecommunication Services                                             | 2015 | 183.00       | 
-| Tires                                                                  | 2015 | 2022.00      | 
-| Tobacco                                                                | 2015 | 1.00         | 
-| Trading Companies & Distributors and Commercial Services & Supplies    | 2015 | 239.00       | 
-| Utilities                                                              | 2013 | 122.00       | 
-| Utilities                                                              | 2016 | 122.00       | 
+| industry_group                                                         | 2013      | 2014      | 2015       | 2016       | 2017      | 
+| ---------------------------------------------------------------------: | --------: | --------: | ---------: | ---------: | --------: | 
+| "Food, Beverage & Tobacco"                                             | 4995.00   | 2685.00   | 0.00       | 100289.00  | 4995.00   | 
+| Food & Beverage Processing                                             | 0.00      | 0.00      | 141.00     | 0.00       | 0.00      | 
+| Capital Goods                                                          | 60190.00  | 93699.00  | 3505.00    | 6369.00    | 60190.00  | 
+| Technology Hardware & Equipment                                        | 61100.00  | 167361.00 | 106157.00  | 1566.00    | 61100.00  | 
+| Materials                                                              | 200513.00 | 75678.00  | 0.00       | 88267.00   | 200513.00 | 
+| Consumer Durables & Apparel                                            | 2867.00   | 3280.00   | 0.00       | 1162.00    | 2867.00   | 
+| "Textiles, Apparel, Footwear and Luxury Goods"                         | 0.00      | 0.00      | 387.00     | 0.00       | 0.00      | 
+| Software & Services                                                    | 6.00      | 146.00    | 22856.00   | 22846.00   | 6.00      | 
+| Chemicals                                                              | 0.00      | 0.00      | 62369.00   | 0.00       | 0.00      | 
+| Semiconductors & Semiconductor Equipment                               | 0.00      | 50.00     | 0.00       | 4.00       | 0.00      | 
+| Commercial & Professional Services                                     | 1157.00   | 477.00    | 0.00       | 2890.00    | 1157.00   | 
+| Retailing                                                              | 0.00      | 19.00     | 11.00      | 0.00       | 0.00      | 
+| Utilities                                                              | 122.00    | 0.00      | 0.00       | 122.00     | 122.00    | 
+| Gas Utilities                                                          | 0.00      | 0.00      | 122.00     | 0.00       | 0.00      | 
+| Telecommunication Services                                             | 52.00     | 183.00    | 183.00     | 0.00       | 52.00     | 
+| Electrical Equipment and Machinery                                     | 0.00      | 0.00      | 9801558.00 | 0.00       | 0.00      | 
+| Containers & Packaging                                                 | 0.00      | 0.00      | 2988.00    | 0.00       | 0.00      | 
+| "Mining - Iron, Aluminum, Other Metals"                                | 0.00      | 0.00      | 8181.00    | 0.00       | 0.00      | 
+| Media                                                                  | 9645.00   | 9645.00   | 1919.00    | 1808.00    | 9645.00   | 
+| Automobiles & Components                                               | 130189.00 | 230015.00 | 817227.00  | 1404833.00 | 130189.00 | 
+| "Pharmaceuticals, Biotechnology & Life Sciences"                       | 32271.00  | 40215.00  | 0.00       | 0.00       | 32271.00  | 
+| Tires                                                                  | 0.00      | 0.00      | 2022.00    | 0.00       | 0.00      | 
+| Trading Companies & Distributors and Commercial Services & Supplies    | 0.00      | 0.00      | 239.00     | 0.00       | 0.00      | 
+| "Forest and Paper Products - Forestry, Timber, Pulp and Paper, Rubber" | 0.00      | 0.00      | 8909.00    | 0.00       | 0.00      | 
+| "Consumer Durables, Household and Personal Products"                   | 0.00      | 0.00      | 931.00     | 0.00       | 0.00      | 
+| Energy                                                                 | 750.00    | 0.00      | 0.00       | 10024.00   | 750.00    | 
+| Food & Staples Retailing                                               | 0.00      | 773.00    | 706.00     | 2.00       | 0.00      | 
+| Household & Personal Products                                          | 0.00      | 0.00      | 0.00       | 0.00       | 0.00      | 
+| Tobacco                                                                | 0.00      | 0.00      | 1.00       | 0.00       | 0.00      | 
+| Semiconductors & Semiconductors Equipment                              | 0.00      | 0.00      | 3.00       | 0.00       | 0.00      | 
+
